@@ -1,0 +1,73 @@
+-- Created by Vertabelo (http://vertabelo.com)
+-- Last modification date: 2023-03-04 12:01:46.092
+
+
+-- sequences
+-- Sequence: seq_categoria_id
+CREATE SEQUENCE seq_categoria_id
+    NO MINVALUE
+    NO MAXVALUE
+    NO CYCLE
+;
+
+-- Sequence: seq_producto_id
+CREATE SEQUENCE seq_producto_id
+    NO MINVALUE
+    NO MAXVALUE
+    NO CYCLE
+;
+
+CREATE SEQUENCE seq_order_id
+    NO MINVALUE
+    NO MAXVALUE
+    NO CYCLE
+;
+
+-- tables
+-- Table: categorias
+CREATE TABLE categorias (
+                            id integer default nextval('seq_categoria_id'::regclass) NOT NULL,
+                            nombre varchar(100)  NOT NULL,
+                            descripcion varchar(100)  NOT NULL,
+                            estado boolean default TRUE NOT NULL,
+                            CONSTRAINT categorias_pk PRIMARY KEY (id)
+);
+
+-- Table: productos
+CREATE TABLE productos (
+                           id integer default nextval('seq_producto_id'::regclass) NOT NULL,
+                           categoria_id int  NOT NULL,
+                           sku varchar(16)  NOT NULL,
+                           nombre varchar(150)  NOT NULL,
+                           descripcion varchar(200)  NOT NULL,
+                           precio_venta decimal(5,2)  NOT NULL,
+                           stock int  NOT NULL,
+                           estado boolean default TRUE NOT NULL,
+                           CONSTRAINT productos_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE ordenes (
+                            id integer default nextval('seq_order_id'::regclass) NOT NULL,
+                            producto_id int  NOT NULL,
+                            cantidad int  NOT NULL,
+                            precio decimal(5,2)  NOT NULL,
+                            estado boolean default TRUE NOT NULL,
+                            CONSTRAINT ordenes_pk PRIMARY KEY (id)
+);
+
+-- foreign keys
+-- Reference: productos_categorias (table: productos)
+ALTER TABLE productos ADD CONSTRAINT productos_categorias
+    FOREIGN KEY (categoria_id)
+        REFERENCES categorias (id)
+        NOT DEFERRABLE
+            INITIALLY IMMEDIATE
+;
+
+ALTER TABLE ordenes ADD CONSTRAINT order_product
+    FOREIGN KEY (producto_id)
+        REFERENCES productos (id)
+        NOT DEFERRABLE
+            INITIALLY IMMEDIATE
+;
+-- End of file.
